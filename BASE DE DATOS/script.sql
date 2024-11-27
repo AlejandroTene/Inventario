@@ -22,6 +22,7 @@ insert into categorias(nombre,categoria_padre)
 values('Bebidas con alcohol',5);
 insert into categorias(nombre,categoria_padre)
 values('Bebidas sin alcohol',5);
+select * from categorias
 
 --tabla categorias_unidad_medida
 drop table if exists categorias_unidad_medida;
@@ -110,7 +111,7 @@ insert into productos(nombre,udm,precio_de_venta,tiene_iva,coste,categoria,stock
 values('Fuze Tea','u',0.8,TRUE,0.7,7,49);
 
 
---select * from productos
+select * from productos
 
 --tabla proveedores
 drop table if exists proveedores;
@@ -130,7 +131,7 @@ values('1792285747','C','Santiago Mosquera','0992920306','zantycb89@gmail.com','
 insert into proveedores(identificador,tipo_de_documento,nombre,telefono,correo,direccion)
 values('1792285747001','R','Snacks SA','0992928706','snacks@gmail.com','La Tola');
 
---select * from proveedores
+select * from proveedores
 
 
 --tabla estados_pedido
@@ -151,7 +152,7 @@ values('R','Recibido');
 --tabla cabecera_pedido
 drop table if exists cabecera_pedido;
 create table cabecera_pedido(
-	numero int not null,
+	numero serial not null,
 	proveedor varchar(13) not null,
 	fecha date not null,
 	estado char(1) not null,
@@ -159,40 +160,40 @@ create table cabecera_pedido(
 	constraint cabecera_pedido_estado_fk foreign key (estado)
 	references estados_pedido(codigo)
 );
-insert into cabecera_pedido(numero,proveedor,fecha,estado)
-values(1,'1792285747','20/11/2023','R');
-insert into cabecera_pedido(numero,proveedor,fecha,estado)
-values(2,'1792285747','20/11/2023','R');
+insert into cabecera_pedido(proveedor,fecha,estado)
+values('1792285747','20/11/2023','R');
+insert into cabecera_pedido(proveedor,fecha,estado)
+values('1792285747','20/11/2023','R');
 
 
---select * from cabecera_pedido
+select * from cabecera_pedido
 
 
 --tabla detalle_pedido
 drop table if exists detalle_pedido;
 create table detalle_pedido(
-	codigo int not null,
+	codigo serial not null,
 	cabecera_pedido int not null,
 	producto int not null,
 	cantidad_solicitada int not null,
-	subtotal money not null,
 	cantidad_recibida int not null,
+	subtotal money not null,
 	constraint detalle_pedido_pk primary key (codigo),
 	constraint detalle_pedido_cabecera_fk foreign key (cabecera_pedido)
 	references cabecera_pedido(numero),
 	constraint detalle_pedido_producto_fk foreign key (producto)
 	references productos(codigo_producto)
 );
-insert into detalle_pedido(codigo,cabecera_pedido,producto,cantidad_solicitada,subtotal,cantidad_recibida)
-values(1,1,1,100,37.29,100);
-insert into detalle_pedido(codigo,cabecera_pedido,producto,cantidad_solicitada,subtotal,cantidad_recibida)
-values(2,1,4,50,11.8,50);
-insert into detalle_pedido(codigo,cabecera_pedido,producto,cantidad_solicitada,subtotal,cantidad_recibida)
-values(3,2,1,10,3.73,10);
+insert into detalle_pedido(cabecera_pedido,producto,cantidad_solicitada,cantidad_recibida,subtotal)
+values(1,1,100,100,37.29);
+insert into detalle_pedido(cabecera_pedido,producto,cantidad_solicitada,cantidad_recibida,subtotal)
+values(1,4,50,50,11.8);
+insert into detalle_pedido(cabecera_pedido,producto,cantidad_solicitada,cantidad_recibida,subtotal)
+values(2,1,10,10,3.73);
 
 
 
---select * from detalle_pedido
+select * from detalle_pedido
 
 
 --tabla cabecera_ventas
@@ -208,8 +209,7 @@ create table cabecera_ventas(
 insert into cabecera_ventas(fecha,total_sin_iva,iva,total)
 values('20/11/2023 20:00:00',3.26,0.39,3.65);
 
-
---select * from cabecera_ventas
+select * from cabecera_ventas
 
 
 --tabla detalle_ventas
@@ -233,7 +233,7 @@ values(1,1,5,0.58,2.9,3.25);
 insert into detalle_ventas(cabecera_ventas,producto,cantidad,precio_venta,subtotal,subtotal_con_iva)
 values(1,4,1,0.36,0.36,0.4);
 
---select * from detalle_ventas
+select * from detalle_ventas
 
 
 --tabla historial_stock
@@ -260,4 +260,4 @@ insert into historial_stock(fecha,referencia,producto,cantidad)
 values('20/11/2023 20:00:00','Venta 1',4,1);
 
 
---select * from historial_stock
+select * from historial_stock
